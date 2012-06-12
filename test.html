@@ -1,0 +1,105 @@
+<html>
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+<style>
+#t360_img {
+	position: absolute;
+	left: 300px;
+}
+</style>
+</head>
+<body>
+<img id="t360_img"/>
+<script>
+$prefix = "animation/METALSILVERLOOK_";
+$amount = 18;
+$ext = ".png";
+$start = 1;
+function turnme(repeat){
+	console.log("turning!");
+	cont = false;
+	$('#t360_img').attr('src', $prefix + nicenumber($start) + $ext);
+	if($start < $amount) {
+		$start++;
+		cont = true;
+	}
+
+	if($start == $amount && repeat) {
+		$start = 1;
+		cont = true;
+	}
+
+	if(cont) {
+		setTimeout(function(){
+			turnme(repeat);
+		}, 100);
+	}
+}
+
+function turnto() {
+	$('#t360_img').attr('src', $prefix + nicenumber($start) + $ext);
+}
+
+$dragging = false;
+
+$lastx = 0;
+$lasty = 0;
+$('#t360_img').on('mousedown', function(e){
+	$dragging = true;
+	$lastx = e.clientX;
+	$lasty = e.clientY;
+	e.preventDefault();
+	e.stopPropagation();
+})
+
+
+$(document).on('mouseup', function(){
+	$dragging = false;
+})
+
+
+$(document).on('mousemove', function(e){
+	if(!$dragging) return;
+	var width_step = 5;
+  if (Math.abs(e.clientX - $lastx) >= width_step) {
+      if (e.clientX - $lastx >= width_step) {
+        $start--;
+      } else {
+        $start++;
+      }
+      if ($start > $amount) {
+        $start = 1;
+      }
+      if ($start < 1) {
+          $start = $amount;
+      }
+      $lastx = e.clientX;
+      turnto();
+/*      options.currPos = pageX;
+      $obj.html('<img src="' + aImages[options.currImg] + '" />');*/
+  }
+/*var width_step = 3;
+if (Math.abs(options.currPos - pageX) >= width_step) {
+	if($dragging) {
+		if(Math.abs(e.clientX - $lastx) >= width_step) {
+			$lastx = e.clientX;
+			$start++;
+		}
+		if(Math.abs(e.clientX - $lastx) >= width_step) {
+			$lastx = e.clientX;
+			$start--;
+		}
+		if($start <= 0) $start = $amount;
+		if($start > $amount) $start = 1;
+		turnto();
+	}*/
+})
+
+function nicenumber(num) {
+	if(num < 10) return String("0" + num);
+	return String(num);
+}
+turnme(false);
+</script>
+</body>
+</html>
